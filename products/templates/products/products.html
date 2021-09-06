@@ -20,8 +20,8 @@
                 <h1 class="my-4">GeekShop</h1>
                 <div class="list-group">
                     {% for category in categories %}
-
-                    <a href="#" class="list-group-item">{{ category.name }}</a>
+                    <a href="#" class="list-group-item">{{ category }}</a>
+{#                    <a href="#" class="list-group-item">Новинки</a>#}
 {#                    <a href="#" class="list-group-item">Одежда</a>#}
 {#                    <a href="#" class="list-group-item">Обувь</a>#}
 {#                    <a href="#" class="list-group-item">Аксессуары</a>#}
@@ -72,7 +72,7 @@
                         <div class="card h-100">
                             <a href="#">
                                 <img class="card-img-top"
-                                     src="{% static  product.image  %}"
+                                     src="/media/{{product.image}}"
                                      alt="">
                             </a>
 

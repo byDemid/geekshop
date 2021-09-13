@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     # app
     'products',
     'users',
+    'baskets',
 ]
 
 MIDDLEWARE = [
@@ -133,3 +134,4 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 AUTH_USER_MODEL = 'users.User'
+LOGIN_URL = '/users/login/'

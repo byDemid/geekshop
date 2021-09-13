@@ -21,12 +21,6 @@
                 <div class="list-group">
                     {% for category in categories %}
                     <a href="#" class="list-group-item">{{ category }}</a>
-{#                    <a href="#" class="list-group-item">Новинки</a>#}
-{#                    <a href="#" class="list-group-item">Одежда</a>#}
-{#                    <a href="#" class="list-group-item">Обувь</a>#}
-{#                    <a href="#" class="list-group-item">Аксессуары</a>#}
-{#                    <a href="#" class="list-group-item">Подарки</a>#}
-
                     {% endfor %}
                 </div>
 
@@ -84,7 +78,7 @@
                                 <p class="card-text">{{ product.description }}</p>
                             </div>
                             <div class="card-footer text-center">
-                                <button type="button" class="btn btn-outline-success">Отправить в корзину</button>
+                                <a href="{% url 'baskets:basket_add' product.id %}" class="btn btn-outline-success">Отправить в корзину</a>
                             </div>
                         </div>
                     </div>

@@ -11,6 +11,6 @@ window.onload = function () {
                 $('.basket_list').html(data.result)
             },
         });
-        Event.preventDefault();
+        event.preventDefault();
     })
 }

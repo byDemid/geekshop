@@ -2,7 +2,7 @@ from django import forms
 from users.forms import UserRegisterForm, UserProfileForm
 from users.models import User
 
-from products.models import ProductsCategory
+from products.models import ProductsCategory, Product
 
 
 class UserAdminRegisterForm(UserRegisterForm):
@@ -20,13 +20,30 @@ class UserAdminProfileForm(UserProfileForm):
 
 
 class CategoryForm(forms.ModelForm):
-    # name = forms.CharField(widget=forms.TextInput(attrs={'placeholder': 'Введите имя категории'}))
-    # description = forms.CharField(widget=forms.TextInput(attrs={'placeholder': 'Введите описание'}))
+    name = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control py-4',
+                                                         'placeholder': 'Введите имя категории'}))
+    description = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control py-4',
+                                                                'placeholder': 'Введите описание'}))
 
     class Meta:
         model = ProductsCategory
         fields = ('name', 'description')
 
 
-class Product(forms.ModelForm):
-    pass
+class ProductForm(forms.ModelForm):
+    name = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control py-4',
+                                                         'placeholder': 'Введите имя категории'}))
+    image = forms.ImageField(widget=forms.FileInput(), required=False)
+    description = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control py-4',
+                                                                'placeholder': 'Введите описание'}))
+    price = forms.DecimalField(widget=forms.TextInput(attrs={'class': 'form-control py-4',
+                                                                'placeholder': 'Введите цену'}))
+    quantity = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control py-4',
+                                                                'placeholder': 'Введите количество'}))
+
+
+
+
+    class Meta:
+        model = Product
+        fields = ('name', 'image', 'description', 'price', 'quantity', 'category')

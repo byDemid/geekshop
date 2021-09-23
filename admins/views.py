@@ -9,10 +9,11 @@ from admins.forms import UserAdminRegisterForm, UserAdminProfileForm
 from users.models import User
 
 from products.models import ProductsCategory, Product
-from admins.forms import CategoryForm
+from admins.forms import CategoryForm, ProductForm
 
 from django.views.generic.list import ListView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
+
 
 # Create your views here.
 
@@ -34,6 +35,7 @@ class UserListView(ListView):
     @method_decorator(user_passes_test(lambda u: u.is_superuser))
     def dispatch(self, request, *args, **kwargs):
         return super(UserListView, self).dispatch(request, *args, **kwargs)
+
 
 # @user_passes_test(lambda u: u.is_superuser)
 # def admin_users(request):
@@ -91,7 +93,6 @@ class UserUpdateView(UpdateView):
         return super(UserUpdateView, self).dispatch(request, *args, **kwargs)
 
 
-
 # @user_passes_test(lambda u: u.is_superuser)
 # def admin_users_update(request, id):
 #     users_select = User.objects.get(id=id)
@@ -108,6 +109,7 @@ class UserUpdateView(UpdateView):
 #         'users_select': users_select
 #     }
 #     return render(request, 'admins/admin-users-update-delete.html', context)
+
 
 class UserDeleteView(DeleteView):
     model = User
@@ -131,9 +133,6 @@ class UserDeleteView(DeleteView):
 #     user.is_active = False
 #     user.save()
 #     return HttpResponseRedirect(reverse('admins:admin_users'))
-
-
-
 
 
 @user_passes_test(lambda u: u.is_superuser)
@@ -178,17 +177,12 @@ def admin_products_category_update(request, id):
     return render(request, 'admins/admin-products-category-update-delete.html', context)
 
 
-# @user_passes_test(lambda u: u.is_superuser)
-# def admin_products_category_delete(request, id):
-#     user = User.objects.get(id=id)
-#     user.is_active = False
-#     user.save()
-#     return HttpResponseRedirect(reverse('admins:admin_products_category'))
-
-
-
-
-
+@user_passes_test(lambda u: u.is_superuser)
+def admin_products_category_delete(request, id):
+    category = ProductsCategory.objects.get(id=id)
+    category.is_active = False
+    category.save()
+    return HttpResponseRedirect(reverse('admins:admin_products_category'))
 
 
 @user_passes_test(lambda u: u.is_superuser)
@@ -197,3 +191,45 @@ def admin_products(request):
         'products': Product.objects.all()
     }
     return render(request, 'admins/admin-products.html', context)
+
+
+@user_passes_test(lambda u: u.is_superuser)
+def admin_products_create(request):
+    if request.method == 'POST':
+        form = ProductForm(data=request.POST)
+        if form.is_valid():
+            form.save()
+            return HttpResponseRedirect(reverse('admins:admin_products_category'))
+    else:
+        form = ProductForm()
+    context = {
+        'title': 'GeekShop - Aдмин | Создание продукта',
+        'form': form
+    }
+    return render(request, 'admins/admin-products-create.html', context)
+
+
+@user_passes_test(lambda u: u.is_superuser)
+def admin_products_update(request, id):
+    product_select = Product.objects.get(id=id)
+    if request.method == 'POST':
+        form = ProductForm(data=request.POST, instance=product_select, files=request.FILES)
+        if form.is_valid():
+            form.save()
+            return HttpResponseRedirect(reverse('admins:admin_products'))
+    else:
+        form = ProductForm(instance=product_select)
+    context = {
+        'title': 'GeekShop - Админ | Обновление продукта',
+        'form': form,
+        'product_select': product_select
+    }
+    return render(request, 'admins/admin-products-update-delete.html', context)
+
+
+@user_passes_test(lambda u: u.is_superuser)
+def admin_products_delete(request, id):
+    category = Product.objects.get(id=id)
+    category.is_active = False
+    category.save()
+    return HttpResponseRedirect(reverse('admins:admin_products'))

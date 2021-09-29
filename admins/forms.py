@@ -6,7 +6,6 @@ from products.models import ProductsCategory, Product
 
 
 class UserAdminRegisterForm(UserRegisterForm):
-
     image = forms.ImageField(widget=forms.FileInput(), required=False)
 
     class Meta:
@@ -37,12 +36,9 @@ class ProductForm(forms.ModelForm):
     description = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control py-4',
                                                                 'placeholder': 'Введите описание'}))
     price = forms.DecimalField(widget=forms.TextInput(attrs={'class': 'form-control py-4',
-                                                                'placeholder': 'Введите цену'}))
+                                                             'placeholder': 'Введите цену'}))
     quantity = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control py-4',
-                                                                'placeholder': 'Введите количество'}))
-
-
-
+                                                             'placeholder': 'Введите количество'}))
 
     class Meta:
         model = Product

@@ -14,21 +14,14 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path, include
+from django.urls import path
 
-from django.conf import settings
-from django.conf.urls.static import static
+app_name = 'baskets'
 
-from products.views import index
+from baskets.views import basket_add, basket_remove, basket_edit
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('', index, name='index'),
-    path('products/', include('products.urls', namespace='products')),
-    path('users/', include('users.urls', namespace='users')),
-    path('baskets/', include('baskets.urls', namespace='baskets')),
-    path('admins/', include('admins.urls', namespace='admins')),
+    path('basket_add/<int:id>', basket_add, name='basket_add'),
+    path('delete/<int:id>', basket_remove, name='basket_remove'),
+    path('edit/<int:id>/<int:quantity>/', basket_edit, name='basket_edit')
 ]
-
-if settings.DEBUG:
-    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

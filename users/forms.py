@@ -47,7 +47,7 @@ class UserRegisterForm(UserCreationForm):
 
     def clean_email(self):
             email = self.cleaned_data.get('email')
-            if email in User.objects.all():
+            if email in User.objects.get(email=email):
                 raise forms.ValidationError("Эта электронная почта уже зарегистрирована")
             return email
 

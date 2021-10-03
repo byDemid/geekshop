@@ -15,10 +15,11 @@ class UserProfileForm(UserChangeForm):
                                                                'placeholder': 'Введите имя'}))
     last_name = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control py-4',
                                                               'placeholder': 'Введите фамилию'}))
+    # ege = forms.IntegerField
 
     class Meta:
         model = User
-        fields = ('username', 'email', 'first_name', 'last_name', 'image')
+        fields = ('username', 'email', 'first_name', 'last_name', 'image', 'age')
 
 
 class UserLoginForm(AuthenticationForm):
@@ -46,10 +47,16 @@ class UserRegisterForm(UserCreationForm):
         fields = ('username', 'email', 'first_name', 'last_name', 'password1', 'password2', 'age')
 
     def clean_email(self):
-            email = self.cleaned_data.get('email')
-            if email in User.objects.get(email=email):
-                raise forms.ValidationError("Эта электронная почта уже зарегистрирована")
-            return email
+        email = self.cleaned_data.get('email')
+        if email in User.objects.get(email=email):
+            raise forms.ValidationError("Эта электронная почта уже зарегистрирована")
+        return email
+
+    def clean_age(self):
+        years_old = self.cleaned_data['age']
+        if years_old < 18:
+            raise forms.ValidationError('Попробуйте зарегистрироваться, когда будете старше!')
+        return years_old
 
     def __init__(self, *args, **kwargs):
         super(UserRegisterForm, self).__init__(*args, **kwargs)
@@ -70,9 +77,3 @@ class UserRegisterForm(UserCreationForm):
         user.activation_key = hashlib.sha1((user.email + salt).encode('utf8')).hexdigest()
         user.save()
         return user
-
-    # def clean_age(self):
-    #     years_old = self.cleaned_data['age']
-    #     if years_old < 18:
-    #         raise forms.ValidationError('Попробуйте зарегистрироваться, когда будете старше!')
-    #     return years_old

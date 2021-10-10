@@ -13,17 +13,18 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
-
 from django.urls import path
-# from users.views import login, register, logout, profile, verify
-from users.views import LoginListView, RegisterListView, Logout, ProfileFormView
+from .views import OrderList, OrderCreate, OrderRead, OrderUpdate, OrderDelete, order_forming_complete
 
-app_name = 'users'
+app_name = 'ordersapp'
+
 
 urlpatterns = [
-    path('login/', LoginListView.as_view(), name='login'),
-    path('register/', RegisterListView.as_view(), name='register'),
-    path('logout/', Logout.as_view(), name='logout'),
-    path('profile/', ProfileFormView.as_view(), name='profile'),
-    path('verify/<str:email>/<str:activation_key>/', RegisterListView.verify, name='verify'),
+    path('', OrderList.as_view(), name='list'),
+    path('create/', OrderCreate.as_view(), name='create'),
+    path('read/<int:pk>/', OrderRead.as_view(), name='read'),
+    path('update/<int:pk>/', OrderUpdate.as_view(), name='update'),
+    path('delete/<int:pk>/', OrderDelete.as_view(), name='delete'),
+    path('forming-complete/<int:pk>/', order_forming_complete, name='forming_complete'),
+
 ]

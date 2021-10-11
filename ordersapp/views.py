@@ -126,21 +126,21 @@ def order_forming_complete(request, pk):
     return HttpResponseRedirect(reverse('orders:list'))
 
 
-@receiver(pre_save, sender=Basket)
-@receiver(pre_save, sender=OrderItem)
-def product_quantity_update_delete(sender, instance, **kwargs):
-    if instance.pk:
-        instance.product.quantity -= instance.quantity - instance.get_item(int(instance.pk))
-    else:
-        instance.product.quantity -= instance.quantity
-    instance.product.save()
-
-
-@receiver(pre_delete, sender=Basket)
-@receiver(pre_delete, sender=OrderItem)
-def product_quantity_update_delete(sender, instance, **kwargs):
-    instance.product.quantity += instance.quantity
-    instance.product.save()
+# @receiver(pre_save, sender=Basket)
+# @receiver(pre_save, sender=OrderItem)
+# def product_quantity_update_delete(sender, instance, **kwargs):
+#     if instance.pk:
+#         instance.product.quantity -= instance.quantity - instance.get_item(int(instance.pk))
+#     else:
+#         instance.product.quantity -= instance.quantity
+#     instance.product.save()
+#
+#
+# @receiver(pre_delete, sender=Basket)
+# @receiver(pre_delete, sender=OrderItem)
+# def product_quantity_update_delete(sender, instance, **kwargs):
+#     instance.product.quantity += instance.quantity
+#     instance.product.save()
 
 
 def payment_result(request):

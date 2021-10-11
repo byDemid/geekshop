@@ -2,7 +2,7 @@ from django.db import transaction
 from django.db.models.signals import pre_save, pre_delete
 from django.dispatch import receiver
 from django.forms import inlineformset_factory
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, JsonResponse
 from django.shortcuts import get_object_or_404
 
 # Create your views here.
@@ -12,6 +12,7 @@ from django.views.generic import ListView, CreateView, UpdateView, DeleteView, D
 from baskets.models import Basket
 from ordersapp.forms import OrderItemsForm
 from ordersapp.models import Order, OrderItem
+from products.models import Product
 
 
 class OrderList(ListView):
@@ -95,6 +96,9 @@ class OrderUpdate(UpdateView):
             formset = OrderFormSet(self.request.POST, instance=self.object)
         else:
             formset = OrderFormSet(instance=self.object)
+            for form in formset:
+                if form.instance.pk:
+                    form.initial['price'] = form.instance.product.price
         context['orderitems'] = formset
         return context
 
@@ -122,18 +126,40 @@ def order_forming_complete(request, pk):
     return HttpResponseRedirect(reverse('orders:list'))
 
 
-@receiver(pre_save, sender=Basket)
-@receiver(pre_save, sender=OrderItem)
-def product_quantity_update_delete(sender, instance, **kwargs):
-    if instance.pk:
-        instance.product.quantity -= instance.quantity - instance.get_item(int(instance.pk))
-    else:
-        instance.product.quantity -= instance.quantity
-    instance.product.save()
+# @receiver(pre_save, sender=Basket)
+# @receiver(pre_save, sender=OrderItem)
+# def product_quantity_update_delete(sender, instance, **kwargs):
+#     if instance.pk:
+#         instance.product.quantity -= instance.quantity - instance.get_item(int(instance.pk))
+#     else:
+#         instance.product.quantity -= instance.quantity
+#     instance.product.save()
+#
+#
+# @receiver(pre_delete, sender=Basket)
+# @receiver(pre_delete, sender=OrderItem)
+# def product_quantity_update_delete(sender, instance, **kwargs):
+#     instance.product.quantity += instance.quantity
+#     instance.product.save()
 
 
-@receiver(pre_delete, sender=Basket)
-@receiver(pre_delete, sender=OrderItem)
-def product_quantity_update_delete(sender, instance, **kwargs):
-    instance.product.quantity += instance.quantity
-    instance.product.save()
+def payment_result(request):
+    # ik_co_id = 51237daa8f2a2d8413000000
+    # ik_inv_id = 339800573
+    # ik_inv_st = success
+    # ik_pm_no = 1
+    status = request.GET.get('ik_inv_st')
+    if status == 'success':
+        order_pk = request.GET.get('ik_pm_no')
+        order_item = Order.objects.get(pk=order_pk)
+        order_item.status = Order.PAID
+        order_item.save()
+    return HttpResponseRedirect(reverse('orders:list'))
+
+def get_product_price(request,pk):
+    if request.is_ajax():
+        product = Product.objects.filter(pk=pk).first()
+        if product:
+            return JsonResponse({'price':product.price})
+
+        return JsonResponse({'price': 0})

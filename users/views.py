@@ -27,26 +27,6 @@ class LoginListView(LoginView):
         context['title'] = 'GeekShop - Авторизация'
         return context
 
-# def login(request):
-#     if request.method == 'POST':
-#         form = UserLoginForm(data=request.POST)
-#         if form.is_valid():
-#             username = request.POST['username']
-#             password = request.POST['password']
-#             user = auth.authenticate(username=username, password=password)
-#             if user and user.is_active:
-#                 auth.login(request, user)
-#                 return HttpResponseRedirect(reverse('index'))
-#
-#     else:
-#         form = UserLoginForm()
-#     context = {
-#         'title': 'GeekShop - Авторизация',
-#         'form': form
-#     }
-#
-#     return render(request, 'users/login.html', context)
-
 
 class RegisterListView(SuccessMessageMixin,FormView):
     model = User
@@ -94,23 +74,6 @@ class RegisterListView(SuccessMessageMixin,FormView):
         except Exception as e:
             return HttpResponseRedirect(reverse('index'))
 
-# def register(request):
-#     if request.method == 'POST':
-#         form = UserRegisterForm(data=request.POST)
-#         if form.is_valid():
-#             user = form.save()
-#             if send_verify_link(user):
-#                 messages.success(request, 'Вы успешно зарегистрированы')
-#             return HttpResponseRedirect(reverse('users:login'))
-#
-#     else:
-#         form = UserRegisterForm()
-#     context = {
-#         'title': 'GeekSop - Регистрация',
-#         'form': form
-#     }
-#     return render(request, 'users/register.html', context)
-
 
 class ProfileFormView(LoginRequiredMixin,UpdateView):
     model = User
@@ -146,31 +109,8 @@ class ProfileFormView(LoginRequiredMixin,UpdateView):
             'profile_form': profile_form,
         })
 
-# @login_required
-# def profile(request):
-#     if request.method == 'POST':
-#         form = UserProfileForm(data=request.POST, instance=request.user, files=request.FILES)
-#         profile_form = UserProfileEditForm(data=request.POST, instance=request.user.userprofile)
-#         if form.is_valid() and profile_form.is_valid():
-#             form.save()
-#             messages.success(request, 'Данные сохранены')
-#             return HttpResponseRedirect(reverse('users:profile'))
-#
-#     else:
-#         profile_form = UserProfileEditForm(instance=request.user.userprofile)
-#         form = UserProfileForm(instance=request.user)
-#     context = {
-#         'title': 'GeekShop - Профиль',
-#         'form': form,
-#         'profile_form': profile_form,
-#         # 'baskets': Basket.objects.filter(user=request.user)
-#
-#     }
-#     return render(request, 'users/profile.html', context)
 
 class Logout(LogoutView):
     template_name = "products/index.html"
 
-# def logout(request):
-#     auth.logout(request)
-#     return HttpResponseRedirect(reverse('index'))
+

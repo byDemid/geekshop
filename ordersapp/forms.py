@@ -1,4 +1,6 @@
 from django import forms
+
+from .models import Product
 from .models import Order, OrderItem
 
 
@@ -8,8 +10,7 @@ class OrderForm(forms.ModelForm):
         exclude = ('user', )
 
     def __init__(self, *args, **kwargs):
-        super(OrderForm, self).__init__(*args, **kwargs)
-        for field_name, field in self.fields.items():
+         for field_name, field in self.fields.items():
             field.widget.attrs['class'] = 'form-control'
 
 
@@ -24,3 +25,5 @@ class OrderItemsForm(forms.ModelForm):
         super(OrderItemsForm, self).__init__(*args, **kwargs)
         for field_name, field in self.fields.items():
             field.widget.attrs['class'] = 'form-control'
+
+        self.fields['product'].queryset = Product.objects.all().select_related()

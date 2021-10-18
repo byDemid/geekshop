@@ -62,7 +62,7 @@ MIDDLEWARE = [
 
     'social_django.middleware.SocialAuthExceptionMiddleware',
     'debug_toolbar.middleware.DebugToolbarMiddleware',
-    # 'social_django.middleware.SocialAuthExceptionMiddlewar'
+
 ]
 
 ROOT_URLCONF = 'geekshop.urls'

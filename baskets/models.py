@@ -39,18 +39,18 @@ class Basket(models.Model):
         baskets = self.get_items_cached
         return sum(basket.quantity for basket in baskets)
 
-    # def delete(self,*args,**kwargs):
-    #     self.product.quantity +=self.quantity
-    #     self.save()
-    #     super(Basket, self).delete(*args,**kwargs)
-    #
-    # def save(self,*args,**kwargs):
-    #     if self.pk:
-    #         self.product.quantity -= self.quantity - self.get_item(int(self.pk))
-    #     else:
-    #         self.product.quantity -= self.quantity
-    #     self.product.save()
-    #     super(Basket, self).save(*args,**kwargs)
+    def delete(self,*args,**kwargs):
+        self.product.quantity +=self.quantity
+        self.save()
+        super(Basket, self).delete(*args,**kwargs)
+
+    def save(self,*args,**kwargs):
+        if self.pk:
+            self.product.quantity -= self.quantity - self.get_item(int(self.pk))
+        else:
+            self.product.quantity -= self.quantity
+        self.product.save()
+        super(Basket, self).save(*args,**kwargs)
 
     @staticmethod
     def get_item(pk):

@@ -4,17 +4,17 @@ from products.models import Product
 from django.utils.functional import cached_property
 
 
-# class BasketQuerySet(models.QuerySet):
-#
-#     def delete(self, *args, **kwargs):
-#         for item in self:
-#             item.product.quantity += item.quantity
-#             item.product.save()
-#         super(BasketQuerySet, self).delete(*args, **kwargs)
+class BasketQuerySet(models.QuerySet):
+
+    def delete(self, *args, **kwargs):
+        for item in self:
+            item.product.quantity += item.quantity
+            item.product.save()
+        super(BasketQuerySet, self).delete(*args, **kwargs)
 
 
 class Basket(models.Model):
-    # objects = BasketQuerySet.as_manager()
+    objects = BasketQuerySet.as_manager()
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='basket')
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     quantity = models.PositiveIntegerField(default=0)

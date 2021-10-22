@@ -35,7 +35,6 @@ class Basket(models.Model):
         baskets = Basket.objects.filter(user=self.user)
         return sum(basket.sum() for basket in baskets)
 
-
     def delete(self,*args,**kwargs):
         self.product.quantity +=self.quantity
         self.save()

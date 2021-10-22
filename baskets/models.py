@@ -27,17 +27,14 @@ class Basket(models.Model):
     def sum(self):
         return self.quantity * self.product.price
 
+    def total_quantity(self):
+        baskets = Basket.objects.filter(user=self.user)
+        return sum(basket.quantity for basket in baskets)
+
     def total_sum(self):
         baskets = Basket.objects.filter(user=self.user)
         return sum(basket.sum() for basket in baskets)
 
-    @cached_property
-    def get_items_cached(self):
-        return self.user.basket.select_related()
-
-    def total_quantity(self):
-        baskets = self.get_items_cached
-        return sum(basket.quantity for basket in baskets)
 
     def delete(self,*args,**kwargs):
         self.product.quantity +=self.quantity

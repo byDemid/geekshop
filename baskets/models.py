@@ -36,26 +36,26 @@ class Basket(models.Model):
         return self.user.basket.select_related()
 
     def total_quantity(self):
-        baskets = self.get_items_cached
-        return sum(basket.quantity for basket in baskets)
+        _baskets = self.get_items_cached
+        return sum(basket.quantity for basket in _baskets)
 
     def total_sum(self):
-        baskets = self.get_items_cached
-        return sum(basket.sum() for basket in baskets)
+        _baskets = self.get_items_cached
+        return sum(basket.sum() for basket in _baskets)
 
-    def delete(self,*args,**kwargs):
-        self.product.quantity +=self.quantity
+    @staticmethod
+    def get_item(pk):
+        return Basket.objects.get(pk=pk).quantity
+
+    def delete(self, *args, **kwargs):
+        self.product.quantity += self.quantity
         self.save()
-        super(Basket, self).delete(*args,**kwargs)
+        super(Basket, self).delete(*args, **kwargs)
 
-    def save(self,*args,**kwargs):
+    def save(self, *args, **kwargs):
         if self.pk:
             self.product.quantity -= self.quantity - self.get_item(int(self.pk))
         else:
             self.product.quantity -= self.quantity
         self.product.save()
-        super(Basket, self).save(*args,**kwargs)
-
-    @staticmethod
-    def get_item(pk):
-        return Basket.objects.get(pk=pk).quantity
+        super(Basket, self).save(*args, **kwargs)

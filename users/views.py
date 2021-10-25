@@ -10,9 +10,7 @@ from django.urls import reverse, reverse_lazy
 from django.views.generic import FormView, UpdateView
 
 from .forms import UserLoginForm, UserRegisterForm, UserProfileForm, UserProfileEditForm
-from baskets.models import Basket
 
-from django.contrib.auth.decorators import login_required
 
 # Create your views here.
 from .models import User
@@ -21,6 +19,13 @@ from .models import User
 class LoginListView(LoginView):
     template_name = 'users/login.html'
     form_class = UserLoginForm
+    success_url = 'index'
+
+    def get(self, request, *args, **kwargs):
+        sup = super(LoginListView, self).get(request, *args, **kwargs)
+        if request.user.is_authenticated:
+            return HttpResponseRedirect(reverse_lazy(self.success_url))
+        return sup
 
     def get_context_data(self, **kwargs):
         context = super(LoginListView, self).get_context_data(**kwargs)
@@ -28,12 +33,12 @@ class LoginListView(LoginView):
         return context
 
 
-class RegisterListView(SuccessMessageMixin,FormView):
+class RegisterListView(SuccessMessageMixin, FormView):
     model = User
     template_name = 'users/register.html'
     form_class = UserRegisterForm
     success_message = 'Вы успешно зарегистрировались!'
-    success_url = reverse_lazy('auth:login')
+    success_url = reverse_lazy('users:login')
 
     def get_context_data(self, **kwargs):
         context = super(RegisterListView, self).get_context_data(**kwargs)
@@ -69,13 +74,13 @@ class RegisterListView(SuccessMessageMixin,FormView):
                 user.activation_key_expires = None
                 user.is_active = True
                 user.save()
-                auth.login(request, user,backend='django.contrib.auth.backends.ModelBackend')
+                auth.login(request, user, backend='django.contrib.auth.backends.ModelBackend')
             return render(request, 'users/verification.html')
         except Exception as e:
             return HttpResponseRedirect(reverse('index'))
 
 
-class ProfileFormView(LoginRequiredMixin,UpdateView):
+class ProfileFormView(LoginRequiredMixin, UpdateView):
     model = User
     form_class = UserProfileForm
     template_name = 'users/profile.html'
@@ -83,16 +88,14 @@ class ProfileFormView(LoginRequiredMixin,UpdateView):
     success_url = reverse_lazy('users:profile')
 
     def get_context_data(self, **kwargs):
-
         context = super(ProfileFormView, self).get_context_data(**kwargs)
         context['title'] = 'GeekShop - Профиль'
         context['profile_form'] = self.form_class_second(instance=self.request.user.userprofile)
 
         return context
 
-    def get_object(self,*args,**kwargs):
+    def get_object(self, *args, **kwargs):
         return get_object_or_404(User, pk=self.request.user.pk)
-
 
     @transaction.atomic
     def post(self, request, *args, **kwargs):
@@ -112,5 +115,3 @@ class ProfileFormView(LoginRequiredMixin,UpdateView):
 
 class Logout(LogoutView):
     template_name = "products/index.html"
-
-
